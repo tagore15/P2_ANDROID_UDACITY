@@ -16,6 +16,7 @@ import java.util.List;
  * Created by jmd on 3/6/2016.
  */
 public class MovieInfo implements Parcelable {
+    String id;
     String title;
     String overview;
     String vote_average;
@@ -26,6 +27,7 @@ public class MovieInfo implements Parcelable {
         return 0;
     }
     public void writeToParcel(Parcel out, int flags) {
+        out.writeString(id);
         out.writeString(title);
         out.writeString(overview);
         out.writeString(vote_average);
@@ -42,6 +44,7 @@ public class MovieInfo implements Parcelable {
         }
     };
     private MovieInfo(Parcel in) {
+        id = in.readString();
         title = in.readString();
         overview = in.readString();
         vote_average = in.readString();
@@ -71,6 +74,32 @@ class MovieAdapter extends ArrayAdapter<MovieInfo>
         MovieInfo mb = getItem(position);
         String baseImageUrl = "http://image.tmdb.org/t/p/w185/";
         baseImageUrl += mb.poster;
+        Picasso.with(getContext()).load(baseImageUrl).into(iv);
+        return iv;
+    }
+}
+
+class TrailerAdapter extends ArrayAdapter<String>
+{
+    public TrailerAdapter(Context context, int resource, List<String> objects)
+    {
+        super(context, resource, objects);
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        ImageView iv;
+        if (convertView == null) {
+            iv = new ImageView(getContext());
+            iv.setAdjustViewBounds(true);
+        }
+        else {
+            iv = (ImageView)convertView;
+        }
+        String key = getItem(position);
+        String baseImageUrl = "http://img.youtube.com/vi/";
+        baseImageUrl += key;
+        baseImageUrl += "/1.jpg";
         Picasso.with(getContext()).load(baseImageUrl).into(iv);
         return iv;
     }

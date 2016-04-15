@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="sort_by_popular">"SORT BY POPULARITY"</string>
     <string name="sort_by_rating">"SORT BY RATINGS"</string>
+    <string name="show_favourites">"SHOW FAVOURITES"</string>
     <string name="title_activity_detail">movie details</string>
 
 <!-- TODO: Remove or change this placeholder text -->

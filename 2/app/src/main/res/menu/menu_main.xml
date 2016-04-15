@@ -10,4 +10,8 @@
             android:title="@string/sort_by_rating"
             android:orderInCategory="101"
             app:showAsAction="never"/>
+        <item android:id="@+id/show_fav"
+            android:title="@string/show_favourites"
+            android:orderInCategory="102"
+            app:showAsAction="never"/>
 </menu>
