@@ -11,12 +11,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -48,7 +50,6 @@ public class MainFragment extends Fragment {
     }
 
     // Please insert your key to run here from github project
-    private final String API_KEY = "";
 //    private final String SORTING_BY_POPULARITY = "popularity.desc";
 //    private final String SORTING_BY_RATING = "vote_average.desc&vote_count.gte=50";
     private final String SORTING_BY_POPULARITY = "popular";
@@ -74,6 +75,15 @@ public class MainFragment extends Fragment {
         Type type = new TypeToken<List<MovieInfo>>(){}.getType();
         Gson gson = new Gson();
         mf = gson.fromJson(fav_list_string, type);
+        if (mf == null)
+        {
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                    getString(R.string.no_fav_msg),
+                    Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            return;
+        }
 
         MovieAdapter mvAdapter = new MovieAdapter(getActivity().getApplicationContext(), -1, mf);
         gv.setAdapter(mvAdapter);
@@ -132,9 +142,6 @@ public class MainFragment extends Fragment {
             edit.putString("SORT_BY", sort_string);
             edit.commit();
         }
-        //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-                //getSharedPreferences()getPreferences(Context.MODE_PRIVATE)
 
         return super.onOptionsItemSelected(item);
     }
@@ -213,7 +220,7 @@ public class MainFragment extends Fragment {
             {
                 Log.e(TAG_FETCH, "CONNECTED");
                 try {
-                    String api_key = API_KEY;
+                    String api_key = getString(R.string.api_key);
                     String ur = BASE_URL_STRING;
                     ur += sort_string;
                     ur += "?api_key=";
@@ -265,5 +272,4 @@ public class MainFragment extends Fragment {
             return null;
         }
     }
-
 }

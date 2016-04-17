@@ -45,9 +45,8 @@ import java.util.List;
  */
 public class DetailFragment extends Fragment {
 
-    private final String API_KEY = "";
     private final String REVIEW_URL  = "http://api.themoviedb.org/3/movie/";
-    //private final String REVIEW_URL  = "http://api.themoviedb.org/3/movie/";
+
     private MovieInfo mb1;
     List<String> ls = null;
     List<String> vs = null;
@@ -113,10 +112,7 @@ public class DetailFragment extends Fragment {
         Log.e("TITLE1", mb1.title);
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.putString("FAVOURITES", fav_list_string);
-        //edit.remove("FAVOURITES");
         edit.commit();
-        //edit.remove("FAVOURITES").commit();
-        //edit.remove("FAVOURITES1").commit();
     }
     class FetchMovieReviews extends AsyncTask<Void, Void, Void>
     {
@@ -155,7 +151,7 @@ public class DetailFragment extends Fragment {
                 ur += mb1.id;
                 ur += "/reviews";
                 ur += "?api_key=";
-                ur += API_KEY;
+                ur += getString(R.string.api_key);
                 Log.e("DEBUGGING", ur);
 
                 URL url = new URL(ur);
@@ -187,7 +183,7 @@ public class DetailFragment extends Fragment {
                 ur += mb1.id;
                 ur += "/videos";
                 ur += "?api_key=";
-                ur += API_KEY;
+                ur += getString(R.string.api_key);
                 Log.e("DEBUGGING", ur);
 
                 url = new URL(ur);
@@ -205,15 +201,18 @@ public class DetailFragment extends Fragment {
                 while ((data = reader.readLine()) != null) {
                     webPage += data + '\n';
                 }
-                Log.e("REVIEW_FETCHING", webPage);
+                Log.e("TRAILER_FETCHING", webPage);
                 jsObj = new JSONObject(webPage);
                 jsArr = jsObj.getJSONArray("results");
                 vs = new ArrayList<String>();
                 for (int i = 0; i < jsArr.length(); i++) {
                     String st = new String();
                     JSONObject js_arr_obj = jsArr.getJSONObject(i);
-                    st = js_arr_obj.getString("key");
-                    vs.add(st);
+                    if (js_arr_obj.getString("type").equals(("Trailer"))) {
+                        st = js_arr_obj.getString("key");
+                        Log.e("TRAILER", st);
+                        vs.add(st);
+                    }
                 }
 
             } catch (MalformedURLException e) {

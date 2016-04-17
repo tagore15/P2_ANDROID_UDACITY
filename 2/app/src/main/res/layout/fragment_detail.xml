@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.example.android.popmovies.DetailFragment">
 
     <ImageView
@@ -39,18 +41,36 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/release_date"
         android:id="@+id/favButton"
-        android:text="Mark as Favourite"
+        android:text="@string/favourite_button"
         android:onClick="markAsFavourite"/>
-    <ListView
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/favButton"
-        android:id="@+id/trailerList" />
+        android:background="@android:color/holo_orange_light"
+        android:gravity="center"
+        android:text="@string/trailer_label"
+        android:id="@+id/title_trailer"/>
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/title_trailer"
+        android:nestedScrollingEnabled="true"
+        android:id="@+id/trailerList" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/trailerList"
-        android:id="@+id/reviewList" />
+        android:background="@android:color/holo_orange_light"
+        android:gravity="center"
+        android:text="@string/review_label"
+        android:id="@+id/title_review"/>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_review"
+        android:id="@+id/reviewList"
+        android:nestedScrollingEnabled="true"/>
 
 </RelativeLayout>
 </ScrollView>

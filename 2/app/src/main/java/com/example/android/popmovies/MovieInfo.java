@@ -3,6 +3,7 @@ package com.example.android.popmovies;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -52,7 +53,7 @@ public class MovieInfo implements Parcelable {
         poster = in.readString();
     }
     public MovieInfo(){}
-};
+}
 
 class MovieAdapter extends ArrayAdapter<MovieInfo>
 {
@@ -81,17 +82,21 @@ class MovieAdapter extends ArrayAdapter<MovieInfo>
 
 class TrailerAdapter extends ArrayAdapter<String>
 {
+    private Context mContext;
     public TrailerAdapter(Context context, int resource, List<String> objects)
     {
         super(context, resource, objects);
+        mContext = context;
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         ImageView iv;
         if (convertView == null) {
-            iv = new ImageView(getContext());
-            iv.setAdjustViewBounds(true);
+            //iv = new ImageView(mContext);
+            LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(mContext.LAYOUT_INFLATER_SERVICE);
+            iv = (ImageView)(inflater.inflate(R.layout.trailer_image, null));
+           // iv.setAdjustViewBounds(true);
         }
         else {
             iv = (ImageView)convertView;
@@ -100,7 +105,7 @@ class TrailerAdapter extends ArrayAdapter<String>
         String baseImageUrl = "http://img.youtube.com/vi/";
         baseImageUrl += key;
         baseImageUrl += "/1.jpg";
-        Picasso.with(getContext()).load(baseImageUrl).into(iv);
+        Picasso.with(mContext).load(baseImageUrl).placeholder(R.mipmap.ic_launcher).into(iv);
         return iv;
     }
 }

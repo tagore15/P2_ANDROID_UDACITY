@@ -1,13 +1,15 @@
 package com.example.android.popmovies;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.View;
 
 // create a fragment in P2
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     private Boolean mTabletMode = false;
+    private DetailFragment detailFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,30 +34,11 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void markAsFavourite(View v)
+    {
+        detailFragment.markAsFavourite(v);
+    }
 
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.sort_by_pop) {
-            sort_string = SORTING_BY_POPULARITY;
-            updateMovie();
-        }
-        if (id == R.id.sort_by_rate) {
-            sort_string = SORTING_BY_RATING;
-            updateMovie();
-        }
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = sharedPref.edit();
-        edit.putString("SORT_BY", sort_string);
-        edit.commit();
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -67,10 +50,9 @@ public class MainActivity extends ActionBarActivity {
         Bundle args = new Bundle();
         args.putParcelable("movie", mb);
 
-        DetailFragment detailFragment = new DetailFragment();
+        detailFragment = new DetailFragment();
         detailFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).commit();
     }
-
 }
 
