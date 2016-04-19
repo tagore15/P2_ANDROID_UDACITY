@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class DetailFragment extends Fragment {
     private MovieInfo mb1;
     List<String> ls = null;
     List<String> vs = null;
+    View rv = null;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -60,9 +62,23 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rv = inflater.inflate(R.layout.fragment_detail, container, false);
+        rv = inflater.inflate(R.layout.fragment_detail, container, false);
+        Button favButton = (Button)rv.findViewById(R.id.favButton);
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                markAsFavourite(v);
+            }
+        });
         if (getArguments() == null) return rv;
-        mb1 = getArguments().getParcelable("movie");
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movie_detail")) {
+            mb1 = getArguments().getParcelable("movie");
+        }
+        else
+        {
+            mb1 = savedInstanceState.getParcelable("movie_detail");
+        }
         Log.e("TITLE1", mb1.title);
         //setContentView(R.layout.activity_detail);
         TextView tv = (TextView)(rv.findViewById(R.id.title));
@@ -84,10 +100,58 @@ public class DetailFragment extends Fragment {
         tv = (TextView)rv.findViewById(R.id.release_date);
         tv.setText(releaseLabel + mb1.release_date);
 
-        new FetchMovieReviews().execute();
+        if (savedInstanceState == null || !savedInstanceState.containsKey("reviews") || !savedInstanceState.containsKey("trailers")) {
+            new FetchMovieReviews().execute();
+        }
+        else {
+            ls = savedInstanceState.getStringArrayList("reviews");
+            vs = savedInstanceState.getStringArrayList("trailers");
+
+            createReviewTrailerView();
+        }
         return rv;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putParcelable("movie_detail", mb1);
+        ArrayList<String> ls_arrayList = null;
+        ArrayList<String> vs_arrayList = null;
+        if (ls != null && ls.size() > 0) {
+            ls_arrayList = new ArrayList<String>(ls.size());
+            ls_arrayList.addAll(ls);
+        }
+        outState.putStringArrayList("reviews", ls_arrayList);
+        if (vs != null && vs.size() > 0) {
+            vs_arrayList = new ArrayList<String>(vs.size());
+            vs_arrayList.addAll(vs);
+        }
+        outState.putStringArrayList("trailers", vs_arrayList);
+        super.onSaveInstanceState(outState);
+    }
+    private void createReviewTrailerView()
+    {
+        if (vs != null) {
+            ListView tv = (ListView) (rv.findViewById(R.id.trailerList));
+            TrailerAdapter tvAdapter = new TrailerAdapter(getActivity().getApplicationContext(), -1, vs);
+            tv.setAdapter(tvAdapter);
+            tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + vs.get(position)));
+                    startActivity(intent);
+                }
+            });
+        }
+
+        if (ls != null) {
+            ListView lv = (ListView) (rv.findViewById(R.id.reviewList));
+            // ReviewAdapter rvAdapter = new ReviewAdapter(getActivity().this, -1, ls);
+            ArrayAdapter<String> rvAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.custom_text_view, ls);
+            lv.setAdapter(rvAdapter);
+        }
+    }
     public void markAsFavourite(View v)
     {
         Type type = new TypeToken<List<MovieInfo>>(){}.getType();
@@ -125,21 +189,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Void v)
         {
-            ListView tv = (ListView) (getActivity().findViewById(R.id.trailerList));
-            TrailerAdapter tvAdapter = new TrailerAdapter(getActivity().getApplicationContext(), -1, vs);
-            tv.setAdapter(tvAdapter);
-            tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + vs.get(position)));
-                    startActivity(intent);
-                }
-            });
-
-            ListView lv = (ListView) (getActivity().findViewById(R.id.reviewList));
-            // ReviewAdapter rvAdapter = new ReviewAdapter(getActivity().this, -1, ls);
-            ArrayAdapter<String> rvAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.custom_text_view, ls);
-            lv.setAdapter(rvAdapter);
+            createReviewTrailerView();
         };
 
         @Override

@@ -3,13 +3,12 @@ package com.example.android.popmovies;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 
 // create a fragment in P2
 public class MainActivity extends AppCompatActivity {
 
     private Boolean mTabletMode = false;
-    private DetailFragment detailFragment = null;
+  //  private DetailFragment detailFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +33,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void markAsFavourite(View v)
-    {
-        detailFragment.markAsFavourite(v);
-    }
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -50,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putParcelable("movie", mb);
 
-        detailFragment = new DetailFragment();
+        DetailFragment detailFragment = new DetailFragment();
         detailFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).commit();
     }
